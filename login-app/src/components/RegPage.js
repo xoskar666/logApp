@@ -7,27 +7,19 @@ import axios from 'axios';
 import { setUserSession } from '../utils/session';
 import Unauthorize from './Unauthorize'
 
-export default function LoginPage() {
+export default function RegPage() {
+  const [imie, setImie] = useState('')
+  const [nazwisko, setNazwisko] = useState('')
   const [login, setLogin] = useState('')
   const [pwd, setPwd] = useState('')
   const [showModal, setShowModal] = useState(false);
+  
 
-  const handleLogin = () => {
-    axios.post(`http://localhost:4000/login`, { login: login, pwd: pwd }).then(response => {
-      if(response.data.auth){
-        setUserSession(response.data.token)
-        window.location = '/HomePage';
-      } else {
-        setUserSession(response.data.token)
-        setShowModal(true);
-      }
-    }).catch(error => {
-      console.log(error)
+  const handleUtworz = () => {
+    axios.post(`http://localhost:4000/register`, { imie: imie, nazwisko: nazwisko, login: login, pwd: pwd}).then(response => {
+    window.location = location.href;
+    setShowModal(true);
     });
-  }
-
-  const handleRegister = () => {
-    window.location = '/RegPage';
   }
 
   return (
@@ -36,15 +28,29 @@ export default function LoginPage() {
       <div className="app-vertical-center container">
         <div className="login-main col-10 col-sm-8 col-md-8 col-lg-4">
           <div className="login-title">
-            <h3>Zaloguj do serwisu</h3>
+            <h3>Utworz darmowe konto!</h3>
           </div>
           <div className="login-content">
             <form className="login-form">
               <Form.Control
                 type="text"
                 className="form-control"
+                placeholder="Imie"
+                style={{ }}
+                onChange={(e) => setImie(e.target.value)}
+              />
+              <Form.Control
+                type="text"
+                className="form-control"
+                placeholder="Nazwisko"
+                style={{ marginTop: "5px" }}
+                onChange={(e) => setNazwisko(e.target.value)}
+              />
+              <Form.Control
+                type="text"
+                className="form-control"
                 placeholder="Login"
-                style={{ marginTop: "0px" }}
+                style={{ marginTop: "5px" }}
                 onChange={(e) => setLogin(e.target.value)}
               />
               <Form.Control
@@ -52,18 +58,17 @@ export default function LoginPage() {
                 className="form-control"
                 placeholder="Hasło"
                 onChange={(e) => setPwd(e.target.value)}
+                style={{ marginTop: "5px" }}
               />
-              <Button className="w-10" style={{ marginTop: "20px" }} onClick={handleLogin}>
-                Zaloguj
+              <Button className="w-10" style={{ marginTop: "20px" }} onClick={handleUtworz}>
+                Utworz konto
               </Button>
-              <Button className="w-10" style={{ marginTop: "20px", marginLeft: "20px", backgroundColor: "red"}} onClick={handleRegister}>
-                Jestes nowy? Utworz konto
-              </Button>
+
             </form>
+            {showModal && <h1>Pomyślna rejestracja</h1>}
           </div>
         </div>
       </div>
-      {showModal && <Unauthorize showModal={showModal} setShowModal={setShowModal} />}
     </div>
   );
 }
